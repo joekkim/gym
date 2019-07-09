@@ -49,9 +49,9 @@ WINDOW_H = 800
 SCALE       = 6.0        # Track scale
 TRACK_RAD   = 900/SCALE  # Track is heavily morphed circle with this radius
 PLAYFIELD   = 2000/SCALE # Game over boundary
-FPS         = 12.5       # Frames per second; changed from 50 to 12.5
+FPS         = 12.5       # Frames per second; changed from 50 to 12.5 (jk)
 ZOOM        = 2.7        # Camera zoom
-ZOOM_FOLLOW = False      # Set to False for fixed view (don't use zoom); changed to False
+ZOOM_FOLLOW = False      # Set to False for fixed view (don't use zoom); changed to False (jk)
 
 
 TRACK_DETAIL_STEP = 21/SCALE
@@ -96,6 +96,9 @@ class FrictionDetector(contactListener):
                 tile.road_visited = True
                 self.env.reward += 1000.0/len(self.env.track)
                 self.env.tile_visited_count += 1
+                # added for a new terminal condition (jk)
+                if self.env.t >= 10.0/FPS:
+                    self.env.tile_visited_count_last += 1
         else:
             obj.tiles.remove(tile)
             # print tile.road_friction, "DEL", len(obj.tiles) -- should delete to zero when on grass (this works)
@@ -297,6 +300,7 @@ class CarRacing(gym.Env, EzPickle):
         self.reward = 0.0
         self.prev_reward = 0.0
         self.tile_visited_count = 0
+        self.tile_visited_count_last = 0  # added for a new terminal condition (jk)
         self.t = 0.0
         self.road_poly = []
 
@@ -334,7 +338,9 @@ class CarRacing(gym.Env, EzPickle):
             if self.tile_visited_count==len(self.track):
                 done = True
             x, y = self.car.hull.position
-            if abs(x) > PLAYFIELD or abs(y) > PLAYFIELD:
+            #if abs(x) > PLAYFIELD or abs(y) > PLAYFIELD:
+            # changed to no tile visited in last 10 frames
+            if self.t >= 10.0/FPS and (self.tile_visited_count - self.tile_visited_count_last) < 1:
                 done = True
                 step_reward = -100
 
