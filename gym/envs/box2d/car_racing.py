@@ -309,7 +309,7 @@ class CarRacing(gym.Env, EzPickle):
             success = self._create_track()
             if success:
                 break
-            if self.verbose == 1:
+            #if self.verbose == 1:  # muted by jk
                 #print("retry to generate track (normal if there are not many of this messages)")
         self.car = Car(self.world, *self.track[0][1:4])
 
