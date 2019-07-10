@@ -234,8 +234,8 @@ class CarRacing(gym.Env, EzPickle):
             elif pass_through_start and i1==-1:
                 i1 = i
                 break
-        #if self.verbose == 1:  # muted by jk
-            #print("Track generation: %i..%i -> %i-tiles track" % (i1, i2, i2-i1))
+        if self.verbose == 1:
+            print("Track generation: %i..%i -> %i-tiles track" % (i1, i2, i2-i1))
         assert i1!=-1
         assert i2!=-1
 
@@ -309,8 +309,8 @@ class CarRacing(gym.Env, EzPickle):
             success = self._create_track()
             if success:
                 break
-            #if self.verbose == 1:  # muted by jk
-                #print("retry to generate track (normal if there are not many of this messages)")
+            if self.verbose == 1:
+                print("retry to generate track (normal if there are not many of this messages)")
         self.car = Car(self.world, *self.track[0][1:4])
 
         return self.step(None)[0]
@@ -348,9 +348,9 @@ class CarRacing(gym.Env, EzPickle):
             if self.tile_visited_count==len(self.track):
                 done = True
             x, y = self.car.hull.position
-            #if abs(x) > PLAYFIELD or abs(y) > PLAYFIELD:
-            # changed to no tile visited in last 10 frames
-            if self.t >= 10.0/FPS and (self.tile_visited_count - self.tile_visited_count_last) < 1:
+            if abs(x) > PLAYFIELD or abs(y) > PLAYFIELD:
+            # changed to no tile visited in last 10 frames; added by jk
+            #if self.t >= 10.0/FPS and (self.tile_visited_count - self.tile_visited_count_last) < 1:
                 done = True
                 step_reward = -100
 
