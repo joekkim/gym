@@ -234,7 +234,7 @@ class CarRacing(gym.Env, EzPickle):
             elif pass_through_start and i1==-1:
                 i1 = i
                 break
-        if self.verbose == 1:
+        #if self.verbose == 1:  # muted by jk
             #print("Track generation: %i..%i -> %i-tiles track" % (i1, i2, i2-i1))
         assert i1!=-1
         assert i2!=-1
