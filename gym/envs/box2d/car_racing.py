@@ -348,9 +348,7 @@ class CarRacing(gym.Env, EzPickle):
             if self.tile_visited_count==len(self.track):
                 done = True
             x, y = self.car.hull.position
-            if abs(x) > PLAYFIELD or abs(y) > PLAYFIELD:
-                done = True
-                step_reward = -100
+            #if abs(x) > PLAYFIELD or abs(y) > PLAYFIELD:
             # changed to no tile visited in last 10 frames; added by jk
             if self.t >= 10.0/FPS and int(self.tile_visited_count - self.tile_visited_count_last) < 1:
                 done = True
