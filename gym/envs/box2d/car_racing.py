@@ -126,7 +126,8 @@ class CarRacing(gym.Env, EzPickle):
                 shape = polygonShape(vertices=
                     [(0, 0),(1, 0),(1, -1),(0, -1)]))
 
-        self.action_space = spaces.Box( np.array([-1,0,0]), np.array([+1,+1,+1]), dtype=np.float32)  # steer, gas, brake
+        #self.action_space = spaces.Box( np.array([-1,0,0]), np.array([+1,+1,+1]), dtype=np.float32)  # steer, gas, brake
+        self.action_space = spaces.MultiDiscrete([7, 5])  # steer 0-6, accel 0-4; added by jk
         self.observation_space = spaces.Box(low=0, high=255, shape=(STATE_H, STATE_W, 3), dtype=np.uint8)
 
     def seed(self, seed=None):
@@ -234,7 +235,7 @@ class CarRacing(gym.Env, EzPickle):
                 i1 = i
                 break
         if self.verbose == 1:
-            print("Track generation: %i..%i -> %i-tiles track" % (i1, i2, i2-i1))
+            #print("Track generation: %i..%i -> %i-tiles track" % (i1, i2, i2-i1))
         assert i1!=-1
         assert i2!=-1
 
@@ -309,16 +310,25 @@ class CarRacing(gym.Env, EzPickle):
             if success:
                 break
             if self.verbose == 1:
-                print("retry to generate track (normal if there are not many of this messages)")
+                #print("retry to generate track (normal if there are not many of this messages)")
         self.car = Car(self.world, *self.track[0][1:4])
 
         return self.step(None)[0]
 
     def step(self, action):
         if action is not None:
-            self.car.steer(-action[0])
-            self.car.gas(action[1])
-            self.car.brake(action[2])
+            if self.action_space.shape[0] > 2:
+                self.car.steer(-action[0])
+                self.car.gas(action[1])
+                self.car.brake(action[2])
+            else:                               # added by jk
+                self.car.steer(float(3 - action[0]) * 0.25)
+                if action[1] > 0:
+                    self.car.gas(float(action[1] - 1) * 0.3)
+                    self.car.brake(0.0)
+                else:
+                    self.car.gas(0)
+                    self.car.brake(0.3)
 
         self.car.step(1.0/FPS)
         self.world.Step(1.0/FPS, 6*30, 2*30)
