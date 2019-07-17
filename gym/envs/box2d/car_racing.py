@@ -128,7 +128,8 @@ class CarRacing(gym.Env, EzPickle):
 
         #self.action_space = spaces.Box( np.array([-1,0,0]), np.array([+1,+1,+1]), dtype=np.float32)  # steer, gas, brake
         self.action_space = spaces.MultiDiscrete([7, 5])  # steer 0-6, accel 0-4; added by jk
-        self.observation_space = spaces.Box(low=0, high=255, shape=(STATE_H, STATE_W, 3), dtype=np.uint8)
+        #self.observation_space = spaces.Box(low=0, high=255, shape=(STATE_H, STATE_W, 3), dtype=np.uint8)  # jk
+        self.observation_space = spaces.Box(low=0, high=255, shape=(80, 80, 3), dtype=np.uint8)  # manually crop in step()
 
     def seed(self, seed=None):
         self.np_random, seed = seeding.np_random(seed)
@@ -353,6 +354,8 @@ class CarRacing(gym.Env, EzPickle):
             if self.t >= 10.0/FPS and int(self.tile_visited_count - self.tile_visited_count_last) < 1:
                 done = True
                 step_reward = -100
+                
+        self.state = self.state[:80, 8:88]  # manually crop - jk
 
         return self.state, step_reward, done, {}
 
