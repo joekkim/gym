@@ -356,7 +356,7 @@ class CarRacing(gym.Env, EzPickle):
             # changed to no tile visited in last 10 frames; added by jk
             if self.tile_visited_count == self.tile_visited_count_last:
                 self.ct += 1
-                if self.ct > int(FPS * 2 / 3):
+                if self.ct > int(FPS * 32 / 3):
                     self.ct = 0
                     done = True
                     step_reward = -100
