@@ -97,8 +97,8 @@ class FrictionDetector(contactListener):
                 self.env.reward += 1000.0/len(self.env.track)
                 self.env.tile_visited_count += 1
                 # added for a new terminal condition (jk)
-                if self.env.t >= 10.0/FPS:
-                    self.env.tile_visited_count_last += 1
+                #if self.env.t >= 10.0/FPS:
+                    #self.env.tile_visited_count_last += 1
         else:
             obj.tiles.remove(tile)
             # print tile.road_friction, "DEL", len(obj.tiles) -- should delete to zero when on grass (this works)
@@ -302,7 +302,7 @@ class CarRacing(gym.Env, EzPickle):
         self.reward = 0.0
         self.prev_reward = 0.0
         self.tile_visited_count = 0
-        self.tile_visited_count_last = 0  # added for a new terminal condition (jk)
+        self.tile_visited_count_last = -1  # added for a new terminal condition (jk)
         self.t = 0.0
         self.road_poly = []
 
@@ -353,9 +353,10 @@ class CarRacing(gym.Env, EzPickle):
                 done = True
                 step_reward = -100
             # changed to no tile visited in last 10 frames; added by jk
-            #if self.t >= 10.0/FPS and int(self.tile_visited_count - self.tile_visited_count_last) < 1:
-                #done = True
-                #step_reward = -100
+            if self.tile_visited_count <= self.tile_visited_count_last:
+                done = True
+                step_reward = -100
+            self.tile_visited_count_last = self.tile_visited_count
                 
         self.state = self.state[:80, 8:88]  # manually crop - jk
 
