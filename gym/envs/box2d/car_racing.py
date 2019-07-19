@@ -49,9 +49,9 @@ WINDOW_H = 800
 SCALE       = 6.0        # Track scale
 TRACK_RAD   = 900/SCALE  # Track is heavily morphed circle with this radius
 PLAYFIELD   = 2000/SCALE # Game over boundary
-FPS         = 12.5       # Frames per second; changed from 50 to 12.5 (jk)
+FPS         = 50         # Frames per second; changed from 50 to 12.5 (jk)
 ZOOM        = 2.7        # Camera zoom
-ZOOM_FOLLOW = True      # Set to False for fixed view (don't use zoom); changed to False (jk)
+ZOOM_FOLLOW = True       # Set to False for fixed view (don't use zoom); changed to False (jk)
 
 
 TRACK_DETAIL_STEP = 21/SCALE
@@ -351,10 +351,11 @@ class CarRacing(gym.Env, EzPickle):
             x, y = self.car.hull.position
             if abs(x) > PLAYFIELD or abs(y) > PLAYFIELD:
                 done = True
-                step_reward = 0  # changed from -100 to 0 (jk)
+                step_reward = -100
             # changed to no tile visited in last 10 frames; added by jk
             if self.t >= 10.0/FPS and int(self.tile_visited_count - self.tile_visited_count_last) < 1:
                 done = True
+                step_reward = -100
                 
         self.state = self.state[:80, 8:88]  # manually crop - jk
 
