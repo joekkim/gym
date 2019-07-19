@@ -362,6 +362,7 @@ class CarRacing(gym.Env, EzPickle):
                     #step_reward = -100
             else:
                 self.tile_visited_count_last = self.tile_visited_count
+                self.ct = 0
                 
         self.state = self.state[:80, 8:88]  # manually crop - jk
 
