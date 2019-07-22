@@ -359,7 +359,7 @@ class CarRacing(gym.Env, EzPickle):
                 if self.ct > int(FPS * 2 / 3):
                     self.ct = 0
                     done = True
-                    #step_reward = -100
+                    step_reward = -45  # jk
             else:
                 self.tile_visited_count_last = self.tile_visited_count
                 self.ct = 0
